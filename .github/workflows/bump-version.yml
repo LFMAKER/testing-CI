@@ -38,16 +38,6 @@ jobs:
           sed -i "s|\"version\": [^ ]*|\"version\": \"$bumpVersion\",|" "./package.json"
         env:
           NEW_VERSION: ${{ steps.latest_tag.outputs.version }}
-      - name: Commit and push changes
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          git commit -m "Bump version to ${{ env.NEW_VERSION }}"
-          git push
-        env:
-          NEW_VERSION: '${{ env.NEW_VERSION }}'
-
       - uses: EndBug/add-and-commit@v9
         with:
           message: 'Bump Version to ${{ steps.get_tag.stdout }}'
