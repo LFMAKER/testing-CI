@@ -1,6 +1,6 @@
 {
   "name": "MyApp",
-  "version": "4.1.0",
+  "version": "8.4.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

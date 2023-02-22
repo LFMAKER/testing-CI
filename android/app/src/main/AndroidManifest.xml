@@ -10,7 +10,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-        <meta-data android:name="expo.modules.updates.EXPO_RELEASE_CHANNEL" android:value="v4.1.0-production" />
+        <meta-data android:name="expo.modules.updates.EXPO_RELEASE_CHANNEL" android:value="v8.4.1-production" />
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

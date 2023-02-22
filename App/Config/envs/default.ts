@@ -1,4 +1,4 @@
 export const Envs = {
-  appVersion: '4.1.0',
-  expoVersion: '4.1.0',
+  appVersion: '8.4.1',
+  expoVersion: '8.4.1',
 };
