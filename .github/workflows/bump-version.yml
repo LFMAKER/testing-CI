@@ -18,13 +18,6 @@ jobs:
       - name: Set latest tag as env variable
         run: echo "LATEST_TAG=${{ steps.get_tag.stdout }}" >> $NEW_VERSION
 
-      - name: Update package.json
-        uses: bahmutov/update-json-file@v1
-        with:
-          file-path: 'package.json'
-          json-obj: '{"version": "${{ env.NEW_VERSION }}"}'
-          value: '${{ env.NEW_VERSION }}'
-
       - name: Update versionCode and versionString
         run: |
           current_code=$(grep 'versionCode' android/app/build.gradle | grep -oE '[0-9]+')
