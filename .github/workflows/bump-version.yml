@@ -15,16 +15,16 @@ jobs:
 
       - name: Get latest tag
         id: get_tag
-        run: echo $(git tag --sort=-v:refname | head -n1)
+        run: echo "LATEST_TAG=$(git tag --sort=-v:refname | head -n1)" >> $GITHUB_OUTPUT
 
       - name: Update versionCode and versionString
         run: |
           current_code=$(grep 'versionCodeOverride = ' android/app/build.gradle | grep -oE '[0-9]+')
           echo current_code
           new_code=$((current_code+1))
-          echo ${{ steps.get_tag }}
+          echo ${{ steps.get_tag.outputs.LATEST_TAG }}
 
-          bumpVersion=${{ steps.get_tag.stdout }}
+          bumpVersion=${{ steps.get_tag.outputs.LATEST_TAG }}
 
           sed -i "s|MARKETING_VERSION = .*;|MARKETING_VERSION = $bumpVersion;|g" "./ios/MyApp.xcodeproj/project.pbxproj"
           sed -i "s|CURRENT_PROJECT_VERSION = .*;|CURRENT_PROJECT_VERSION = $new_code;|g" "./ios/MyApp.xcodeproj/project.pbxproj"
