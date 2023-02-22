@@ -1,0 +1,58 @@
+name: Bump Version
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get latest tag
+        id: get_tag
+        run: echo $(git tag --sort=-v:refname | head -n1)
+
+      - name: Set latest tag as env variable
+        run: echo "LATEST_TAG=${{ steps.get_tag.stdout }}" >> $NEW_VERSION
+
+      - name: Update package.json
+        uses: bahmutov/update-json-file@v1
+        with:
+          file-path: 'package.json'
+          json-obj: '{"version": "${{ env.NEW_VERSION }}"}'
+          value: '${{ env.NEW_VERSION }}'
+
+      - name: Update versionCode and versionString
+        run: |
+          current_code=$(grep 'versionCode' android/app/build.gradle | grep -oE '[0-9]+')
+          new_code=$((current_code+1))
+          bumpVersion=${{ env.NEW_VERSION }}
+
+          sed -i "s|MARKETING_VERSION = .*;|MARKETING_VERSION = $bumpVersion;|g" "./ios/MadeiraMadeira.xcodeproj/project.pbxproj"
+          sed -i "s|CURRENT_PROJECT_VERSION = .*;|CURRENT_PROJECT_VERSION = $new_code;|g" "./ios/MyApp.xcodeproj/project.pbxproj"
+          sed -i "s|versionCode .*|versionCode $new_code|g" "./android/app/build.gradle"
+
+          sed -i "s|-firebase|-production|g" "./ios/MyApp/Supporting/Expo.plist" 
+          sed -i "s|-firebase|-production|g" "./android/app/src/main/AndroidManifest.xml" 
+          sed -i "s|<string>v.*<\/string>|<string>v$bumpVersion-production</string>|g" "./ios/MyApp/Supporting/Expo.plist"
+          sed -i "s|EXPO_RELEASE_CHANNEL\" android:value=\".*\"|EXPO_RELEASE_CHANNEL\" android:value=\"v$bumpVersion-production\"|g" "./android/app/src/main/AndroidManifest.xml"
+
+          sed -i "s|versionName \".*\"|versionName \"$bumpVersion\"|g" "./android/app/build.gradle"
+          sed -i "s|appVersion: [^ ]*|appVersion: '$bumpVersion',|" "./App/Config/envs/default.ts"
+          sed -i "s|expoVersion: [^ ]*|expoVersion: '$bumpVersion',|" "./App/Config/envs/default.ts"
+          sed -i "s|\"version\": [^ ]*|\"version\": \"$bumpVersion\",|" "./package.json"
+        env:
+          NEW_VERSION: ${{ steps.latest_tag.outputs.version }}
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add .
+          git commit -m "Bump version to ${{ env.NEW_VERSION }}"
+          git push
+        env:
+          NEW_VERSION:  value: '${{ env.NEW_VERSION }}'
+
