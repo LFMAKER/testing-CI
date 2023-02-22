@@ -21,7 +21,7 @@ jobs:
           new_code=$((current_code+1))
           bumpVersion=${{ steps.get_tag.stdout }}
 
-          sed -i "s|MARKETING_VERSION = .*;|MARKETING_VERSION = $bumpVersion;|g" "./ios/MadeiraMadeira.xcodeproj/project.pbxproj"
+          sed -i "s|MARKETING_VERSION = .*;|MARKETING_VERSION = $bumpVersion;|g" "./ios/MyApp.xcodeproj/project.pbxproj"
           sed -i "s|CURRENT_PROJECT_VERSION = .*;|CURRENT_PROJECT_VERSION = $new_code;|g" "./ios/MyApp.xcodeproj/project.pbxproj"
           sed -i "s|versionCode .*|versionCode $new_code|g" "./android/app/build.gradle"
 
