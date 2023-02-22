@@ -54,5 +54,4 @@ jobs:
           git commit -m "Bump version to ${{ env.NEW_VERSION }}"
           git push
         env:
-          NEW_VERSION:  value: '${{ env.NEW_VERSION }}'
-
+          NEW_VERSION: '${{ env.NEW_VERSION }}'
