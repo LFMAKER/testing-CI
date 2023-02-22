@@ -15,14 +15,11 @@ jobs:
         id: get_tag
         run: echo $(git tag --sort=-v:refname | head -n1)
 
-      - name: Set latest tag as env variable
-        run: echo "LATEST_TAG=${{ steps.get_tag.stdout }}" >> $NEW_VERSION
-
       - name: Update versionCode and versionString
         run: |
           current_code=$(grep 'versionCode' android/app/build.gradle | grep -oE '[0-9]+')
           new_code=$((current_code+1))
-          bumpVersion=${{ env.NEW_VERSION }}
+          bumpVersion=${{ steps.get_tag.stdout }}
 
           sed -i "s|MARKETING_VERSION = .*;|MARKETING_VERSION = $bumpVersion;|g" "./ios/MadeiraMadeira.xcodeproj/project.pbxproj"
           sed -i "s|CURRENT_PROJECT_VERSION = .*;|CURRENT_PROJECT_VERSION = $new_code;|g" "./ios/MyApp.xcodeproj/project.pbxproj"
