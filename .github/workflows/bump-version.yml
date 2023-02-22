@@ -15,7 +15,7 @@ jobs:
 
       - name: Get latest tag
         id: get_tag
-        run: echo "LATEST_TAG=$(git tag --sort=-v:refname | head -n1)" >> $GITHUB_OUTPUT
+        run: echo "LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
 
       - name: Update versionCode and versionString
         run: |
